@@ -1,4 +1,9 @@
 {
+  "name": "verify-audit-enabled",
+  "operation-type": "verify_audit_enabled",
+  "include-in-reporting": false
+},
+{
   "name": "increase-max-shards",
   "operation-type": "put-settings",
   "include-in-reporting": false,

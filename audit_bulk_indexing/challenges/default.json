@@ -10,6 +10,9 @@
   "default": true,
   "schedule": [
     {
+      "operation": "verify-audit-enabled"
+    },
+    {
       "operation": "increase-max-shards"
     }
     {%- for shard_count in p_shard_counts %}
