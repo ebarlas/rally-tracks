@@ -1,0 +1,68 @@
+{% set p_shard_counts = shard_counts | default([1, 100, 1000]) %}
+{% set p_client_counts = client_counts | default([1, 4, 8, 16]) %}
+{% set p_bulk_size = bulk_size | default(1000) | int %}
+{% set p_total_docs = total_docs | default(500000) | int %}
+{% set p_warmup_docs = warmup_docs | default(50000) | int %}
+{% set p_replicas = number_of_replicas | default(0) | int %}
+{
+  "name": "default",
+  "description": "Measure bulk indexing throughput impact from security audit logging (access_granted) across shard counts and concurrency.",
+  "default": true,
+  "schedule": [
+    {
+      "operation": "increase-max-shards"
+    }
+    {%- for shard_count in p_shard_counts %}
+    {%- for clients in p_client_counts %}
+    {%- for audit_mode in ["off", "on"] %}
+    ,
+    {
+      "name": "delete-index--{{ shard_count }}s--{{ audit_mode }}--{{ clients }}c--pre",
+      "operation": "delete-index"
+    },
+    {
+      "name": "create-index--{{ shard_count }}s--{{ audit_mode }}--{{ clients }}c",
+      "operation": {
+        "operation-type": "create-index",
+        "settings": {
+          "index.number_of_shards": {{ shard_count | int }},
+          "index.number_of_replicas": {{ p_replicas }}
+        }
+      }
+    },
+    {
+      "name": "check-cluster-health--{{ shard_count }}s--{{ audit_mode }}--{{ clients }}c",
+      "operation": "check-cluster-health"
+    },
+    {
+      "name": "toggle-audit--{{ shard_count }}s--{{ audit_mode }}--{{ clients }}c",
+      "operation": "toggle-audit",
+      "audit_mode": "{{ audit_mode }}"
+    },
+    {
+      "name": "warmup--{{ shard_count }}s--audit-{{ audit_mode }}--{{ clients }}c",
+      "operation": "bulk-index-trivial-warmup",
+      "iterations": {{ ((p_warmup_docs + (p_bulk_size * (clients | int)) - 1) // (p_bulk_size * (clients | int))) | int }},
+      "clients": {{ clients | int }}
+    },
+    {
+      "name": "bulk--{{ shard_count }}s--audit-{{ audit_mode }}--{{ clients }}c",
+      "operation": "bulk-index-trivial",
+      "iterations": {{ ((p_total_docs + (p_bulk_size * (clients | int)) - 1) // (p_bulk_size * (clients | int))) | int }},
+      "clients": {{ clients | int }}
+    },
+    {
+      "name": "delete-index--{{ shard_count }}s--{{ audit_mode }}--{{ clients }}c--post",
+      "operation": "delete-index"
+    }
+    {%- endfor %}
+    {%- endfor %}
+    {%- endfor %}
+    ,
+    {
+      "name": "reset-max-shards",
+      "operation": "reset-max-shards"
+    }
+  ]
+}
+

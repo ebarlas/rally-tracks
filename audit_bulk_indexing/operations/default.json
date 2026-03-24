@@ -1,0 +1,57 @@
+{
+  "name": "increase-max-shards",
+  "operation-type": "put-settings",
+  "include-in-reporting": false,
+  "body": {
+    "persistent": {
+      "cluster.max_shards_per_node": {{ max_shards_per_node | default(50000) }}
+    }
+  }
+},
+{
+  "name": "delete-index",
+  "operation-type": "delete-index",
+  "include-in-reporting": false
+},
+{
+  "name": "create-index",
+  "operation-type": "create-index",
+  "include-in-reporting": false
+},
+{
+  "name": "toggle-audit",
+  "operation-type": "toggle_audit",
+  "include-in-reporting": false
+},
+{
+  "name": "check-cluster-health",
+  "operation-type": "cluster-health",
+  "include-in-reporting": false,
+  "request-params": {
+    "wait_for_status": "green",
+    "wait_for_no_relocating_shards": "true"
+  },
+  "retry-until-success": true
+},
+{
+  "name": "bulk-index-trivial-warmup",
+  "operation-type": "bulk_index_trivial",
+  "bulk_size": {{ bulk_size | default(1000) | int }},
+  "include-in-reporting": false
+},
+{
+  "name": "bulk-index-trivial",
+  "operation-type": "bulk_index_trivial",
+  "bulk_size": {{ bulk_size | default(1000) | int }}
+},
+{
+  "name": "reset-max-shards",
+  "operation-type": "put-settings",
+  "include-in-reporting": false,
+  "body": {
+    "persistent": {
+      "cluster.max_shards_per_node": null
+    }
+  }
+}
+

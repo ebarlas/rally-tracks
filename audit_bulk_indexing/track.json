@@ -1,0 +1,18 @@
+{% import "rally.helpers" as rally with context %}
+{
+  "version": 2,
+  "description": "Measures x-pack security audit logging overhead (access_granted) on bulk indexing throughput across shard counts and concurrency levels.",
+  "indices": [
+    {
+      "name": "audit-bench",
+      "body": "index.json"
+    }
+  ],
+  "operations": [
+    {{ rally.collect(parts="operations/*.json") }}
+  ],
+  "challenges": [
+    {{ rally.collect(parts="challenges/*.json") }}
+  ]
+}
+
