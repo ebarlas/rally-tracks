@@ -1,6 +1,6 @@
-{% set p_shard_counts = shard_counts | default([1, 100, 1000]) %}
-{% set p_client_counts = client_counts | default([1, 4, 8, 16]) %}
-{% set p_bulk_size = bulk_size | default(1000) | int %}
+{% set p_shard_counts = shard_counts | default([1, 100]) %}
+{% set p_client_counts = client_counts | default([4, 8, 16]) %}
+{% set p_bulk_size = bulk_size | default(100) | int %}
 {% set p_total_docs = total_docs | default(500000) | int %}
 {% set p_warmup_docs = warmup_docs | default(50000) | int %}
 {% set p_replicas = number_of_replicas | default(0) | int %}

@@ -41,13 +41,13 @@
 {
   "name": "bulk-index-trivial-warmup",
   "operation-type": "bulk_index_trivial",
-  "bulk_size": {{ bulk_size | default(1000) | int }},
+  "bulk_size": {{ bulk_size | default(100) | int }},
   "include-in-reporting": false
 },
 {
   "name": "bulk-index-trivial",
   "operation-type": "bulk_index_trivial",
-  "bulk_size": {{ bulk_size | default(1000) | int }}
+  "bulk_size": {{ bulk_size | default(100) | int }}
 },
 {
   "name": "reset-max-shards",

@@ -28,17 +28,17 @@ Within a race, the track toggles audit event emission using the **dynamic** clus
 {"@timestamp":"2024-01-01T00:00:00.000Z","message":"test","counter":0}
 ```
 
-- **Bulk request size**: 1000 docs per request by default (`bulk_size`)
-- **Index variants**: 1 / 100 / 1000 primary shards (0 replicas by default)
+- **Bulk request size**: 100 docs per request by default (`bulk_size`)
+- **Index variants**: 1 / 100 primary shards (0 replicas by default)
 - **Concurrency**: configurable `client_counts`
 
 ## Parameters
 
 | Parameter | Default | Description |
 |---|---:|---|
-| `shard_counts` | `[1, 100, 1000]` | Shard counts to test |
-| `client_counts` | `[1, 4, 8, 16]` | Bulk indexing concurrency levels |
-| `bulk_size` | `1000` | Documents per bulk request |
+| `shard_counts` | `[1, 100]` | Shard counts to test |
+| `client_counts` | `[4, 8, 16]` | Bulk indexing concurrency levels |
+| `bulk_size` | `100` | Documents per bulk request |
 | `total_docs` | `500000` | Approx docs indexed (per configuration, across all clients) in the measured phase |
 | `warmup_docs` | `50000` | Approx docs indexed (per configuration, across all clients) in the warmup phase |
 | `number_of_replicas` | `0` | Replica count |
@@ -54,7 +54,7 @@ esrally race \
   --pipeline=benchmark-only \
   --target-hosts=localhost:9200 \
   --client-options="basic_auth_user:'elastic',basic_auth_password:'password'" \
-  --track-params="shard_counts:[1,100,1000],client_counts:[1,4,8,16],bulk_size:1000,total_docs:500000,warmup_docs:50000"
+  --track-params="shard_counts:[1,100],client_counts:[4,8,16],bulk_size:100,total_docs:500000,warmup_docs:50000"
 ```
 
 Quick single-point run:
